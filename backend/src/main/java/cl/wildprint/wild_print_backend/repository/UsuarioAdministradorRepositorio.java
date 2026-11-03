@@ -3,6 +3,7 @@ package cl.wildprint.wild_print_backend.repository;
 import cl.wildprint.wild_print_backend.entity.UsuarioAdministrador;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -15,4 +16,20 @@ import java.util.UUID;
  * @version 1.0
  */
 public interface UsuarioAdministradorRepositorio extends JpaRepository<UsuarioAdministrador, UUID> {
+
+    /**
+     * Busca un usuario administrador por su nombre de usuario.
+     *
+     * @param nombreUsuario nombre de usuario
+     * @return usuario encontrado, si existe
+     */
+    Optional<UsuarioAdministrador> findByNombreUsuario(String nombreUsuario);
+
+    /**
+     * Busca un usuario administrador por su correo electrónico.
+     *
+     * @param correo correo electrónico
+     * @return usuario encontrado, si existe
+     */
+    Optional<UsuarioAdministrador> findByCorreo(String correo);
 }

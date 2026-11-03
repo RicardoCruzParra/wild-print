@@ -3,6 +3,7 @@ package cl.wildprint.wild_print_backend.repository;
 import cl.wildprint.wild_print_backend.entity.Categoria;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -14,4 +15,12 @@ import java.util.UUID;
  * @version 1.0
  */
 public interface CategoriaRepositorio extends JpaRepository<Categoria, UUID>{
+
+    /**
+     * Busca una categoría mediante su slug.
+     *
+     * @param slug identificador textual de la categoría
+     * @return categoría encontrada, si existe
+     */
+    Optional<Categoria> findBySlug(String slug);
 }

@@ -1,10 +1,11 @@
-package cl.wildprint.wild_print_backend.service;
+package cl.wildprint.wild_print_backend.service.impl;
 
 import cl.wildprint.wild_print_backend.entity.EstadoProducto;
 import cl.wildprint.wild_print_backend.entity.Producto;
 import cl.wildprint.wild_print_backend.repository.ImagenProductoRepositorio;
 import cl.wildprint.wild_print_backend.repository.ProductoRepositorio;
 
+import cl.wildprint.wild_print_backend.service.ProductoServicio;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -3,6 +3,7 @@ package cl.wildprint.wild_print_backend.repository;
 import cl.wildprint.wild_print_backend.entity.ImagenProducto;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -24,4 +25,11 @@ public interface ImagenProductoRepositorio extends JpaRepository<ImagenProducto,
      */
     boolean existsByProducto_IdAndEsPortadaTrue(UUID productoId);
 
+    /**
+     * Obtiene las imágenes de un producto ordenadas por su posición.
+     *
+     * @param productoId identificador del producto
+     * @return imágenes ordenadas ascendentemente
+     */
+    List<ImagenProducto> findAllByProducto_IdOrderByOrdenAsc(UUID productoId);
 }
