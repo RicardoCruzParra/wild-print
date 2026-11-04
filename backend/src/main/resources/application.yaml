@@ -20,11 +20,11 @@ spring:
     baseline-on-migrate: false
     validate-migration-naming: true
 
+  session:
+    jdbc:
+      initialize-schema: always
+
 logging:
   level:
     root: INFO
     cl.wildprint: DEBUG
-
-session:
-  jdbc:
-    initialize-schema: always
