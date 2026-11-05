@@ -28,3 +28,12 @@ logging:
   level:
     root: INFO
     cl.wildprint: DEBUG
+
+wild-print:
+  # almacenamiento: r2
+  almacenamiento: local
+  endpoint: ${CLOUDFLARE_R2_ENDPOINT:}
+  bucket: ${CLOUDFLARE_R2_BUCKET:}
+  access-key: ${CLOUDFLARE_R2_ACCESS_KEY:}
+  secret-key: ${CLOUDFLARE_R2_SECRET_KEY:}
+  url-publica: ${CLOUDFLARE_R2_PUBLIC_URL:}
