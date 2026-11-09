@@ -37,3 +37,4 @@ wild-print:
   access-key: ${CLOUDFLARE_R2_ACCESS_KEY:}
   secret-key: ${CLOUDFLARE_R2_SECRET_KEY:}
   url-publica: ${CLOUDFLARE_R2_PUBLIC_URL:}
+  ruta-local: ${WILDPRINT_RUTA_LOCAL:./uploads}

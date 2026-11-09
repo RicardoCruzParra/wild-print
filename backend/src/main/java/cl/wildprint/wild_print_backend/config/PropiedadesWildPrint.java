@@ -24,4 +24,5 @@ public class PropiedadesWildPrint {
     private String accessKey;
     private String secretKey;
     private String urlPublica;
+    private String rutaLocal;
 }

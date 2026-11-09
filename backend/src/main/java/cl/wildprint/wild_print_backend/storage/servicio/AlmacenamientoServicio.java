@@ -3,8 +3,6 @@ package cl.wildprint.wild_print_backend.storage.servicio;
 import cl.wildprint.wild_print_backend.storage.modelo.ArchivoAlmacenado;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-
 /**
  * Define las operaciones disponibles para almacenar archivos.
  *
@@ -13,7 +11,7 @@ import java.io.IOException;
  */
 public interface AlmacenamientoServicio {
 
-    ArchivoAlmacenado almacenar(MultipartFile archivo) throws IOException;
+    ArchivoAlmacenado almacenar(MultipartFile archivo);
 
     void eliminar(String clave);
 }

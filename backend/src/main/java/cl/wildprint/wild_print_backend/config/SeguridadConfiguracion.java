@@ -63,6 +63,11 @@ public class SeguridadConfiguracion {
 
                         .requestMatchers(
                                 HttpMethod.GET,
+                                "/archivos/**"
+                        ).permitAll()
+
+                        .requestMatchers(
+                                HttpMethod.GET,
                                 "/api/productos",
                                 "/api/productos/slug/**",
                                 "/api/categorias",

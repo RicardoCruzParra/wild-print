@@ -90,4 +90,11 @@ public class Producto {
     )
     private Set<Categoria> categorias = new HashSet<>();
 
+    /**
+     * Imágenes asociadas al producto.
+     * Un producto puede tener varias imágenes, incluyendo
+     * una imagen principal y otras secundarias.
+     */
+    @OneToMany(mappedBy = "producto", fetch = FetchType.LAZY)
+    private Set<ImagenProducto> imagenes = new HashSet<>();
 }
