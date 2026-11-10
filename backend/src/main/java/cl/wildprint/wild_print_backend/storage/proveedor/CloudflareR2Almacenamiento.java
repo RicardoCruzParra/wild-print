@@ -6,16 +6,16 @@ import cl.wildprint.wild_print_backend.storage.modelo.ArchivoAlmacenado;
 import cl.wildprint.wild_print_backend.storage.servicio.AlmacenamientoServicio;
 import cl.wildprint.wild_print_backend.storage.validacion.ValidadorArchivo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-
 import java.io.IOException;
+import java.util.Locale;
 import java.util.UUID;
 
 /**
@@ -44,10 +44,12 @@ public class CloudflareR2Almacenamiento implements AlmacenamientoServicio {
      * @return información del archivo almacenado
      */
     @Override
-    public ArchivoAlmacenado almacenar(MultipartFile archivo){
+    public ArchivoAlmacenado almacenar(MultipartFile archivo) {
 
         validadorArchivo.validar(archivo);
+
         String clave = UUID.randomUUID() + obtenerExtension(archivo);
+
         try {
             PutObjectRequest solicitud = PutObjectRequest.builder()
                     .bucket(propiedades.getBucket())
@@ -65,12 +67,33 @@ public class CloudflareR2Almacenamiento implements AlmacenamientoServicio {
             );
 
         } catch (IOException e) {
-            throw new IllegalStateException("No se pudo leer el archivo para almacenarlo.", e);
+            throw new IllegalStateException(
+                    "No se pudo leer el archivo para almacenarlo.", e
+            );
         }
+
         return new ArchivoAlmacenado(
                 clave,
-                propiedades.getUrlPublica() + "/" + clave
+                construirUrl(clave)
         );
+    }
+
+    /**
+     * Construye la URL pública de un archivo almacenado en Cloudflare R2.
+     *
+     * @param clave identificador del archivo
+     * @return URL pública del archivo
+     */
+    @Override
+    public String obtenerUrl(String clave) {
+
+        if (clave == null || clave.isBlank()) {
+            throw new OperacionNoPermitidaException(
+                    "La clave del archivo no puede estar vacía."
+            );
+        }
+
+        return construirUrl(clave);
     }
 
     /**
@@ -84,10 +107,14 @@ public class CloudflareR2Almacenamiento implements AlmacenamientoServicio {
         String nombreOriginal = archivo.getOriginalFilename();
 
         if (nombreOriginal == null || !nombreOriginal.contains(".")) {
-            throw new OperacionNoPermitidaException("El archivo no tiene una extensión válida.");
+            throw new OperacionNoPermitidaException(
+                    "El archivo no tiene una extensión válida."
+            );
         }
 
-        return nombreOriginal.substring(nombreOriginal.lastIndexOf(".")).toLowerCase();
+        return nombreOriginal
+                .substring(nombreOriginal.lastIndexOf("."))
+                .toLowerCase(Locale.ROOT);
     }
 
     /**
@@ -110,5 +137,24 @@ public class CloudflareR2Almacenamiento implements AlmacenamientoServicio {
                 .build();
 
         s3Client.deleteObject(solicitud);
+    }
+
+    /**
+     * Une la URL pública configurada con la clave del archivo.
+     *
+     * @param clave identificador del archivo
+     * @return URL pública completa
+     */
+    private String construirUrl(String clave) {
+
+        String base = propiedades.getUrlPublica();
+
+        if (base == null || base.isBlank()) {
+            throw new IllegalStateException(
+                    "No está configurada la URL pública de Cloudflare R2."
+            );
+        }
+
+        return base.endsWith("/") ? base + clave : base + "/" + clave;
     }
 }

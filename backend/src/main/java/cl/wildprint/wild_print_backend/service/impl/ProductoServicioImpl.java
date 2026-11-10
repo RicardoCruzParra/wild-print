@@ -1,5 +1,6 @@
 package cl.wildprint.wild_print_backend.service.impl;
 
+import cl.wildprint.wild_print_backend.config.PropiedadesWildPrint;
 import cl.wildprint.wild_print_backend.entity.EstadoProducto;
 import cl.wildprint.wild_print_backend.entity.Producto;
 import cl.wildprint.wild_print_backend.repository.ImagenProductoRepositorio;
@@ -27,20 +28,23 @@ public class ProductoServicioImpl implements ProductoServicio {
 
     private final ProductoRepositorio productoRepositorio;
     private final ImagenProductoRepositorio imagenProductoRepositorio;
+    private final PropiedadesWildPrint propiedades;
 
     /**
      * Constructor con inyección de dependencias.
      *
-     * @param productoRepositorio Acceso a los datos de productos.
-     * @param imagenProductoRepositorio Acceso a los datos de imágenes de productos.
+     * @param productoRepositorio acceso a los datos de productos
+     * @param imagenProductoRepositorio acceso a los datos de imágenes
+     * @param propiedades propiedades personalizadas de Wild Print
      */
     public ProductoServicioImpl(
             ProductoRepositorio productoRepositorio,
-            ImagenProductoRepositorio imagenProductoRepositorio) {
+            ImagenProductoRepositorio imagenProductoRepositorio,
+            PropiedadesWildPrint propiedades) {
         this.productoRepositorio = productoRepositorio;
         this.imagenProductoRepositorio = imagenProductoRepositorio;
+        this.propiedades = propiedades;
     }
-
     /**
      * {@inheritDoc}
      */
@@ -170,11 +174,14 @@ public class ProductoServicioImpl implements ProductoServicio {
      * Comprueba que un producto tenga una imagen de portada
      * antes de permitir su publicación.
      *
-     * @param producto Producto que se desea validar.
-     * @throws IllegalStateException Sí se intenta publicar sin imagen de portada.
+     * @param producto producto que se desea validar
+     * @throws IllegalStateException si se intenta publicar sin portada
      */
     private void validarPublicacion(Producto producto) {
-        if (producto.getEstado() == EstadoProducto.PUBLICADO) {
+
+        if (producto.getEstado() == EstadoProducto.PUBLICADO
+                && propiedades.isRequerirPortada()) {
+
             boolean tienePortada =
                     producto.getId() != null
                             && imagenProductoRepositorio
@@ -182,7 +189,8 @@ public class ProductoServicioImpl implements ProductoServicio {
 
             if (!tienePortada) {
                 throw new IllegalStateException(
-                        "No se puede publicar un producto sin imagen de portada");
+                        "No se puede publicar un producto sin imagen de portada"
+                );
             }
         }
     }

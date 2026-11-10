@@ -5,6 +5,8 @@ import cl.wildprint.wild_print_backend.dto.autenticacion.SesionDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.Optional;
+
 /**
  * Define las operaciones de autenticación y gestión de sesiones.
  *
@@ -26,6 +28,14 @@ public interface AutenticacionServicio {
             HttpServletRequest solicitud,
             HttpServletResponse respuesta
     );
+
+    /**
+     * Obtiene la información del administrador autenticado
+     * en la sesión actual.
+     *
+     * @return información de la sesión, si existe
+     */
+    Optional<SesionDTO> obtenerSesionActual();
 
     /**
      * Cierra la sesión del administrador autenticado.

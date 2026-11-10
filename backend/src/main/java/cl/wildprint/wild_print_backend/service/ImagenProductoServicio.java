@@ -1,6 +1,7 @@
 package cl.wildprint.wild_print_backend.service;
 
 import cl.wildprint.wild_print_backend.entity.ImagenProducto;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +22,26 @@ public interface ImagenProductoServicio {
      * @return imagen registrada
      */
     ImagenProducto crear(ImagenProducto imagen);
+
+    /**
+     * Almacena un archivo de imagen y registra sus metadatos
+     * asociándolo al producto indicado.
+     *
+     * @param productoId identificador del producto
+     * @param archivo archivo de imagen que se desea almacenar
+     * @param textoAlternativo texto alternativo para accesibilidad
+     * @param orden posición de la imagen dentro de la galería
+     * @param esPortada indica si la imagen será la portada del producto
+     * @return imagen registrada
+     * @throws IllegalArgumentException si el producto no existe o está en papelera
+     */
+    ImagenProducto crearDesdeArchivo(
+            UUID productoId,
+            MultipartFile archivo,
+            String textoAlternativo,
+            Integer orden,
+            boolean esPortada
+    );
 
     /**
      * Actualiza los metadatos de una imagen existente.
@@ -56,7 +77,7 @@ public interface ImagenProductoServicio {
     boolean existePortada(UUID productoId);
 
     /**
-     * Elimina los metadatos de una imagen.
+     * Elimina los metadatos y el archivo físico de una imagen.
      *
      * @param id identificador de la imagen
      */

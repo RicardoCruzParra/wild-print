@@ -87,4 +87,18 @@ public class AutenticacionController {
     ) {
         return ResponseEntity.ok(csrfToken);
     }
+
+    /**
+     * Obtiene la información del administrador autenticado
+     * en la sesión actual.
+     *
+     * @return información de la sesión o 401 si no hay sesión activa
+     */
+    @GetMapping("/sesion")
+    public ResponseEntity<SesionDTO> obtenerSesionActual() {
+
+        return autenticacionServicio.obtenerSesionActual()
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(401).build());
+    }
 }

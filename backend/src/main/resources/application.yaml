@@ -2,6 +2,11 @@ spring:
   application:
     name: wild-print-backend
 
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 6MB
+
   datasource:
     url: jdbc:postgresql://localhost:5432/wildprint_db
     username: wildprint_user
@@ -38,3 +43,4 @@ wild-print:
   secret-key: ${CLOUDFLARE_R2_SECRET_KEY:}
   url-publica: ${CLOUDFLARE_R2_PUBLIC_URL:}
   ruta-local: ${WILDPRINT_RUTA_LOCAL:./uploads}
+  requerir-portada: ${WILDPRINT_REQUERIR_PORTADA:false}

@@ -1,4 +1,4 @@
- package cl.wildprint.wild_print_backend.config;
+package cl.wildprint.wild_print_backend.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -25,4 +25,10 @@ public class PropiedadesWildPrint {
     private String secretKey;
     private String urlPublica;
     private String rutaLocal;
+
+    /**
+     * Indica si se exige una imagen de portada
+     * para publicar un producto.
+     */
+    private boolean requerirPortada = true;
 }

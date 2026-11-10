@@ -1,15 +1,11 @@
 package cl.wildprint.wild_print_backend.mapper;
 
 import cl.wildprint.wild_print_backend.dto.imagen.ActualizarImagenProductoDTO;
-import cl.wildprint.wild_print_backend.dto.imagen.CrearImagenProductoDTO;
 import cl.wildprint.wild_print_backend.dto.imagen.ImagenProductoDTO;
 import cl.wildprint.wild_print_backend.entity.ImagenProducto;
-import cl.wildprint.wild_print_backend.entity.Producto;
-import cl.wildprint.wild_print_backend.repository.ProductoRepositorio;
+import cl.wildprint.wild_print_backend.storage.servicio.AlmacenamientoServicio;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.util.UUID;
 
 /**
  * Mapper encargado de convertir entidades ImagenProducto y sus respectivos DTO.
@@ -21,7 +17,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ImagenProductoMapper {
 
-    private final ProductoRepositorio productoRepositorio;
+    private final AlmacenamientoServicio almacenamientoServicio;
 
     /**
      * Convierte una entidad ImagenProducto en su representación DTO.
@@ -34,7 +30,7 @@ public class ImagenProductoMapper {
         return ImagenProductoDTO.builder()
                 .id(imagen.getId())
                 .productoId(imagen.getProducto().getId())
-                .url(null)
+                .url(almacenamientoServicio.obtenerUrl(imagen.getClaveArchivo()))
                 .nombreOriginal(imagen.getNombreOriginal())
                 .tipoContenido(imagen.getTipoContenido())
                 .tamanoBytes(imagen.getTamanoBytes())
@@ -43,27 +39,6 @@ public class ImagenProductoMapper {
                 .esPortada(imagen.isEsPortada())
                 .fechaCreacion(imagen.getFechaCreacion())
                 .build();
-    }
-
-    /**
-     * Convierte los datos de creación en una nueva entidad ImagenProducto.
-     *
-     * @param dto datos recibidos para crear la imagen
-     * @return nueva entidad ImagenProducto
-     */
-    public ImagenProducto desdeCrearDTO(CrearImagenProductoDTO dto) {
-
-        ImagenProducto imagen = new ImagenProducto();
-
-        imagen.setProducto(obtenerProducto(dto.getProductoId()));
-        imagen.setNombreOriginal(dto.getNombreOriginal());
-        imagen.setTipoContenido(dto.getTipoContenido());
-        imagen.setTamanoBytes(dto.getTamanoBytes());
-        imagen.setTextoAlternativo(dto.getTextoAlternativo());
-        imagen.setOrden(dto.getOrden());
-        imagen.setEsPortada(dto.getEsPortada());
-
-        return imagen;
     }
 
     /**
@@ -79,20 +54,5 @@ public class ImagenProductoMapper {
         imagen.setTextoAlternativo(dto.getTextoAlternativo());
         imagen.setOrden(dto.getOrden());
         imagen.setEsPortada(dto.getEsPortada());
-    }
-
-    /**
-     * Busca un producto mediante su identificador.
-     *
-     * @param productoId identificador del producto
-     * @return entidad Producto encontrada
-     * @throws IllegalArgumentException si el producto no existe
-     */
-    private Producto obtenerProducto(UUID productoId) {
-
-        return productoRepositorio.findById(productoId)
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "No existe el producto indicado"
-                ));
     }
 }

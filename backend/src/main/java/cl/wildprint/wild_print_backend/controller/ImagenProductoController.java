@@ -1,27 +1,28 @@
 package cl.wildprint.wild_print_backend.controller;
 
+import cl.wildprint.wild_print_backend.dto.imagen.ActualizarImagenProductoDTO;
 import cl.wildprint.wild_print_backend.dto.imagen.ImagenProductoDTO;
+import cl.wildprint.wild_print_backend.entity.ImagenProducto;
 import cl.wildprint.wild_print_backend.mapper.ImagenProductoMapper;
 import cl.wildprint.wild_print_backend.service.ImagenProductoServicio;
-import cl.wildprint.wild_print_backend.dto.imagen.CrearImagenProductoDTO;
-import cl.wildprint.wild_print_backend.dto.imagen.ActualizarImagenProductoDTO;
-import cl.wildprint.wild_print_backend.entity.ImagenProducto;
-
-import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -62,21 +63,35 @@ public class ImagenProductoController {
     }
 
     /**
-     * Registra los metadatos de una imagen asociada a un producto.
+     * Registra una imagen asociada a un producto a partir de un archivo.
      *
      * @param productoId identificador UUID del producto
-     * @param dto datos de la imagen
+     * @param archivo archivo de imagen que se desea almacenar
+     * @param textoAlternativo texto alternativo para accesibilidad
+     * @param orden posición de la imagen dentro de la galería
+     * @param esPortada indica si la imagen será la portada del producto
      * @return imagen registrada
      */
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ImagenProductoDTO> crearImagen(
             @PathVariable UUID productoId,
-            @Valid @RequestBody CrearImagenProductoDTO dto
+            @RequestPart("archivo") MultipartFile archivo,
+            @RequestParam(value = "textoAlternativo", required = false)
+            String textoAlternativo,
+            @RequestParam(value = "orden", defaultValue = "0")
+            Integer orden,
+            @RequestParam(value = "esPortada", defaultValue = "false")
+            boolean esPortada
     ) {
 
-        ImagenProducto imagen = imagenProductoMapper.desdeCrearDTO(dto);
-
-        ImagenProducto imagenCreada = imagenProductoServicio.crear(imagen);
+        ImagenProducto imagenCreada =
+                imagenProductoServicio.crearDesdeArchivo(
+                        productoId,
+                        archivo,
+                        textoAlternativo,
+                        orden,
+                        esPortada
+                );
 
         return ResponseEntity.status(201)
                 .body(imagenProductoMapper.aDTO(imagenCreada));

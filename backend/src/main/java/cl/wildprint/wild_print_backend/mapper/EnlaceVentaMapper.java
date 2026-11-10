@@ -38,6 +38,7 @@ public class EnlaceVentaMapper {
                 .id(enlace.getId())
                 .productoId(enlace.getProducto().getId())
                 .plataformaId(enlace.getPlataforma().getId())
+                .nombrePlataforma(enlace.getPlataforma().getNombre())
                 .urlExterna(enlace.getUrlExterna())
                 .etiqueta(enlace.getEtiqueta())
                 .activo(enlace.isActivo())

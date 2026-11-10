@@ -51,6 +51,13 @@ public class LocalAlmacenamiento implements AlmacenamientoServicio {
                 .normalize();
 
         try {
+            if (Files.exists(directorio) && !Files.isDirectory(directorio)) {
+                throw new IllegalStateException(
+                        "La ruta local de almacenamiento no es un directorio: "
+                                + directorio
+                );
+            }
+
             Files.createDirectories(directorio);
 
             Path destino = directorio.resolve(clave);
@@ -66,6 +73,24 @@ public class LocalAlmacenamiento implements AlmacenamientoServicio {
                 clave,
                 "/archivos/" + clave
         );
+    }
+
+    /**
+     * Construye la URL pública de un archivo almacenado localmente.
+     *
+     * @param clave identificador del archivo
+     * @return URL relativa del archivo
+     */
+    @Override
+    public String obtenerUrl(String clave) {
+
+        if (clave == null || clave.isBlank()) {
+            throw new OperacionNoPermitidaException(
+                    "La clave del archivo no puede estar vacía."
+            );
+        }
+
+        return "/archivos/" + clave;
     }
 
     /**

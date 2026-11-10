@@ -15,6 +15,9 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -94,5 +97,30 @@ public class AutenticacionServicioImpl implements AutenticacionServicio {
                 respuesta,
                 autenticacion
         );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<SesionDTO> obtenerSesionActual() {
+
+        Authentication autenticacion =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        if (autenticacion == null
+                || !autenticacion.isAuthenticated()
+                || autenticacion instanceof AnonymousAuthenticationToken) {
+            return Optional.empty();
+        }
+
+        return usuarioAdministradorServicio
+                .buscarPorNombreUsuario(autenticacion.getName())
+                .map(administrador -> SesionDTO.builder()
+                        .administradorId(administrador.getId())
+                        .nombreUsuario(administrador.getNombreUsuario())
+                        .correo(administrador.getCorreo())
+                        .build());
     }
 }
